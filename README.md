@@ -1,2 +1,2 @@
 # AIForAlzheimers_EyeEyeCaptain
-AI for Alzheimer’s Hackathon — OCT-powered Early Detection -  seeing the future… literally starts with looking into the eye. 👁️✨
+OCT-powered Early Detection for AI for Alzheimer’s Hackathon — seeing the future… literally starts with looking into the eye. 👁️✨
