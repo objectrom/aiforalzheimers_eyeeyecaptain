@@ -2,7 +2,7 @@ import yaml
 import torch
 from torch.utils.data import DataLoader
 
-from datasets.oct_dataset import RetinalOCTDataset
+from dataocteye.oct_dataset import RetinalOCTDataset
 from models.oct_classifier import OCTClassifier
 from train.train import train
 from train.eval import evaluate   
