@@ -8,7 +8,7 @@ from train.train import train
 from train.eval import evaluate   
 
 def main():
-    with open("configs/config.yaml") as f:
+    with open("/content/AIForAlzheimers_EyeEyeCaptain/configs/config.yaml") as f:
         cfg = yaml.safe_load(f)
 
     dataset = RetinalOCTDataset(cfg["data_root"])
