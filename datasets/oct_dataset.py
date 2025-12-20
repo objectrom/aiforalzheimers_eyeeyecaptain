@@ -5,9 +5,8 @@ from torch.utils.data import Dataset
 
 class RetinalOCTDataset(Dataset):
     """
-    Loads OCT / fOCT scans stored as .npy files.
-    Directory structure:
-    data/raw/{AD,Control}/patient_xxx/scan_x.npy
+    Functional OCT dataset using light ON/OFF reflectivity changes.
+    Each .npy file is assumed to be (T, H, W).
     """
 
     def __init__(self, root_dir):
@@ -30,14 +29,19 @@ class RetinalOCTDataset(Dataset):
 
     def __getitem__(self, idx):
         item = self.samples[idx]
-        x = np.load(item["path"])
+        vol = np.load(item["path"])  
 
-        # normalization
-        x = (x - x.mean()) / (x.std() + 1e-6)
+        assert vol.ndim == 3, "Expected (T, H, W) OCT volume"
 
-        x = torch.tensor(x, dtype=torch.float32)
-        if x.ndim == 2:
-            x = x.unsqueeze(0)  # (1, H, W)
+        T = vol.shape[0]
+        off = vol[: T // 2].mean(axis=0)
+        on  = vol[T // 2 :].mean(axis=0)
 
+        delta = on - off
+
+        delta = (delta - delta.mean()) / (delta.std() + 1e-6)
+
+        x = torch.tensor(delta, dtype=torch.float32).unsqueeze(0) 
         y = torch.tensor(item["label"], dtype=torch.float32)
+
         return x, y, item["patient"]

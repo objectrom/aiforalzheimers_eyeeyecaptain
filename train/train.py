@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 def train(model, loader, device, epochs, lr):
+    device = torch.device(device)
     model.to(device)
     model.train()
 
@@ -10,13 +11,13 @@ def train(model, loader, device, epochs, lr):
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
     for epoch in range(epochs):
-        total_loss = 0
+        total_loss = 0.0
 
         for x, y, _ in loader:
             x = x.to(device)
-            y = y.to(device)
+            y = y.float().to(device)        
 
-            logits = model(x).squeeze()
+            logits = model(x).view(-1)     
             loss = criterion(logits, y)
 
             optimizer.zero_grad()
@@ -25,4 +26,5 @@ def train(model, loader, device, epochs, lr):
 
             total_loss += loss.item()
 
-        print(f"[Epoch {epoch+1}/{epochs}] Loss: {total_loss / len(loader):.4f}")
+        avg_loss = total_loss / len(loader)
+        print(f"[Epoch {epoch+1}/{epochs}] Loss: {avg_loss:.4f}")
