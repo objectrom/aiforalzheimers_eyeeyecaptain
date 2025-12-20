@@ -1,0 +1,23 @@
+[subject ID]_DARK == From the bright light condition, acquired with stimulus light off. This is a stack of raw images loaded and cropped from .sdb files, then resized to isotropic pixels. Each pixel is 3.89 microns wide x 3.89 microns tall. Depending on how you load this ANALYZE file (e.g., by drag-and-drop into ImageJ), you may have to add 32768 to each pixel to appropriate "zero" it out.
+
+[subject ID]_DARK_MARKED == Derived from [subject ID]_DARK, but made 8-bit. Stores manually-marked information about different layers. The maximum pixel value that is NOT from a manual marking is 230. 
+
+_flat_[subject ID]_DARK == Derived from [subject ID]_DARK, uses the manually-marked contour of the RPE in [subject ID]_DARK_MARKED to flatted each image. This includes the retina from 100 microns left of the fovea's center, to 2750 microns right of the fovea's center (i.e., towards the optic nerve). Pixels are now 1 micron x 1 micron. Due to some quirks with ANALYZE file output in R, if you drag-and-drop this file into ImageJ, ImageJ will misread each pixel as spanning 4 mm x 4 mm. 
+
+_flat-normed_[subject ID]_DARK == Derived from _flat_[subject ID]_DARK, uses the manually-marked layer borders in [subject ID]_DARK_MARKED to find specific layers/borders, which are then used to spatially normalize the retina. Data are mapped according to %Depth. This includes the 500 micron to 2750 micron span of retina used for formal analyses. This file also includes a small (and "experimental" attempt to spatially normalize a small section of fovea (+/- 50 microns from the fovea's center). 
+
+[subject ID]_LIGHT == From the bright light condition, acquired with stimulus light on. This is a stack of raw images loaded and cropped from .sdb files, then resized to isotropic pixels. Each pixel is 3.89 microns wide x 3.89 microns tall. Depending on how you load this ANALYZE file (e.g., by drag-and-drop into ImageJ), you may have to add 32768 to each pixel to appropriate "zero" it out.
+
+[subject ID]_LIGHT_MARKED == Derived from [subject ID]_LIGHT, but made 8-bit. Stores manually-marked information about different layers. The maximum pixel value that is NOT from a manual marking is 230. 
+
+_flat_[subject ID]_LIGHT == Derived from [subject ID]_LIGHT, uses the manually-marked contour of the RPE in [subject ID]_LIGHT_MARKED to flatted each image. This includes the retina from 100 microns left of the fovea's center, to 2750 microns right of the fovea's center (i.e., towards the optic nerve). Pixels are now 1 micron x 1 micron. Due to some quirks with ANALYZE file output in R, if you drag-and-drop this file into ImageJ, ImageJ will misread each pixel as spanning 4 mm x 4 mm. 
+
+_flat-normed_[subject ID]_LIGHT == Derived from _flat_[subject ID]_LIGHT, uses the manually-marked layer borders in [subject ID]_DARK_MARKED to find specific layers/borders, which are then used to spatially normalize the retina. Data are mapped according to %Depth. This includes the 500 micron to 2750 micron span of retina used for formal analyses. This file also includes a small (and "experimental" attempt to spatially normalize a small section of fovea (+/- 50 microns from the fovea's center). 
+
+Excel file == Contains reflectivity values (before any signal normalization) averaged from 500 to 2750 microns from the fovea's center [unless otherwise noted]. 
+
+exclusions plain text file == Lists any exclusions (e.g., due to artifacts, low SNR). 
+
+
+
+

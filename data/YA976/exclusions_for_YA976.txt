@@ -1,0 +1,9 @@
+bright light experiment:
+ DARK-5th of 15 [low SNR by visual inspection] 
+      6th of 15 [low SNR by visual inspection] 
+
+ LIGHT-2nd of 15 [low SNR by visual inspection] 
+
+dim light experiment:
+ DARK-no exclusions
+ LIGHT-no exclusions

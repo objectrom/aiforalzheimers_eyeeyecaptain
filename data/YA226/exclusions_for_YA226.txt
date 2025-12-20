@@ -1,0 +1,11 @@
+bright light experiment:
+ DARK-none
+
+ LIGHT-4th of 15 (6906)
+
+IF ANALYSES OF THE FOVEA ARE EVER PURSUED, review 13th of 15 (6924)
+   
+
+dim light experiment:
+ DARK-no exclusions
+ LIGHT-no exclusions

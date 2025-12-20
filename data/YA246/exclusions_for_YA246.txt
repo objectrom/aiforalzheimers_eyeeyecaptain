@@ -1,0 +1,13 @@
+bright light experiment:
+ DARK-2nd of 15 [misaligned]
+ LIGHT-2nd of 15 [low SNR by visual inspection],
+       12th of 15 [low SNR by visual inspection], and 14th of 15
+       14th of 15 [low SNR by visual inspection]
+
+
+dim light experiment:
+ DARK-no exclusions
+ LIGHT-3rd of 5 [low SNR by visual inspection]
+
+
+For all (especially "bright" data): If there are ever formal analyses of the fovea, caution using "fovea" since it's off-center

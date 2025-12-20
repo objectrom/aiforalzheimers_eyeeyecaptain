@@ -1,15 +1,22 @@
 import os
-import numpy as np
 import torch
 import SimpleITK as sitk
 from torch.utils.data import Dataset
 
 class RetinalOCTDataset(Dataset):
     """
-    Functional OCT Dataset using LIGHT / DARK reflectivity volumes.
-    Each patient folder contains:
-        *_LIGHT.hdr + *.img
-        *_DARK.hdr  + *.img
+    Functional OCT Dataset using flat-normed LIGHT/DARK volumes.
+
+    Assumes directory structure:
+        data/
+          ├── AD057/
+          ├── CO839/
+          ├── YA211/
+          └── ...
+
+    Label rule:
+        AD*        -> 1 (Alzheimer)
+        CO*, YA*   -> 0 (Control)
     """
 
     def __init__(self, root_dir):
@@ -20,17 +27,33 @@ class RetinalOCTDataset(Dataset):
             if not os.path.isdir(patient_path):
                 continue
 
-            light = None
-            dark = None
+            if patient.startswith("AD"):
+                label = 1
+            elif patient.startswith("CO") or patient.startswith("YA") or patient.startswith("AQ"):
+                label = 0
+            else:
+                continue
+
+            light, dark = None, None
 
             for f in os.listdir(patient_path):
-                if "flat-normed" in f and "LIGHT" in f and f.endswith(".hdr"):
+                fname = f.lower()
+
+                if (
+                    "flat-normed" in fname
+                    and "light" in fname
+                    and fname.endswith(".hdr")
+                ):
                     light = os.path.join(patient_path, f)
-                if "flat-normed" in f and "DARK" in f and f.endswith(".hdr"):
+
+                if (
+                    "flat-normed" in fname
+                    and "dark" in fname
+                    and fname.endswith(".hdr")
+                ):
                     dark = os.path.join(patient_path, f)
 
-            if light and dark:
-                label = 1 if patient.startswith("AD") else 0
+            if light is not None and dark is not None:
                 self.samples.append({
                     "light": light,
                     "dark": dark,
@@ -49,13 +72,13 @@ class RetinalOCTDataset(Dataset):
 
         assert light_vol.shape == dark_vol.shape
 
-        delta = light_vol - dark_vol  
+        delta = (light_vol - dark_vol).astype("float32")   
 
-        delta = delta.mean(axis=0)   
+        delta = delta.mean(axis=0)      
 
         delta = (delta - delta.mean()) / (delta.std() + 1e-6)
 
-        x = torch.tensor(delta, dtype=torch.float32).unsqueeze(0)  
+        x = torch.tensor(delta, dtype=torch.float32).unsqueeze(0) 
         y = torch.tensor(item["label"], dtype=torch.float32)
 
         return x, y, item["patient"]

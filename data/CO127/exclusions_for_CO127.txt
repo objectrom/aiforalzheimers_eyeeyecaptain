@@ -1,0 +1,4 @@
+bright light experiment:
+ DARK-no exclusions at this time, but IF FORMAL ANALYSES OF FOVEA ARE EVER CONSIDERED, note SNR is too low for fovea in 4th of 5
+ LIGHT-1st of 5 [operator error on slice position]
+

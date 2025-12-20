@@ -1,0 +1,6 @@
+There is a ~0.3mm-wide strip of a sub-RPE deposit (presumably drusen), and another smaller area of ~0.07mm wide. These are both within 1mm of the fovea. 
+For drusen-free profiles, we just averaged from 1.0mm to 2.75mm from the fovea (load into ImageJ, rotate retina 90 degrees, put box around retina, CTRL+K to get average profile)
+
+THICKNESSES:
+ (1) To keep RNFL thicknesses comparable across subjects, the whole 0.5mm to 2.75mm strip is used.
+ (2) Whole-retinal thickness does include this drusen, but since other layers appear a bit compressed, and drusen is only present in small portion of the 0.5mm to 2.75mm strip, it's unlikely to have meaningful impact on outcomes. This is especially true of lights on versus off differences, since drusen is equally present in both. 

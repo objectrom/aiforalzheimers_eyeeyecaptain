@@ -1,0 +1,7 @@
+bright light experiment:
+ DARK-no exclusions
+ LIGHT-no exclusions
+
+dim light experiment:
+ DARK-no exclusions
+ LIGHT-no exclusions

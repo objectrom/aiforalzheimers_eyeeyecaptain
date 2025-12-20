@@ -1,0 +1,16 @@
+bright light experiment:
+ DARK-5th of 15 due to artifact
+      9th of 15 due to artifact
+      13th of 15 due to artifact
+ LIGHT-4th of 15 due to artifact
+      7th of 15 due to artifact
+      11th of 15 due to artifact
+
+IF ANALYSES OF THE FOVEA ARE EVER PURSUED,
+   exclude fovea from LIGHT, 5th of 15 due to low SNR
+   exclude fovea from LIGHT, 6th of 15 due to low SNR
+
+
+dim light experiment:
+ DARK-no exclusions
+ LIGHT-1st of 5 (7-3-_ [low ART --> low SNR]

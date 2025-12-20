@@ -1,0 +1,3 @@
+bright light experiment:
+ DARK-no exclusions
+ LIGHT-no exclusions, but IF FORMAL ANALYSES OF FOVEA ARE EVER DONE, NOTE LOW SNR THERE IN 5th of 5

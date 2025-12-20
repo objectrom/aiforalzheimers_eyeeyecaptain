@@ -1,0 +1,18 @@
+NO EXCLUSIONS FOR THE PUBLISHED ANALYSES (of 500 to 2750 microns from the center of the fovea).
+
+HOWEVER, PLEASE NOTE THAT THE FOVEA WAS NOT WELL-CAPTURED IN SEVERAL IMAGES. 
+FOR THIS REASON, THE FOVEA FROM ANOTHER IMAGE WAS COPY+PASTED IN TO PERMIT USE OF THE R SCRIPT. 
+
+IF ANALYSES OF THE FOVEA ARE EVER PURSUED, EXCLUDE VALUES FROM THESE IMAGES:
+
+bright light experiment:
+ DARK-8th of 15
+
+ LIGHT-8th of 15
+       13th of 15
+       14th of 15
+      [although 7th of 15 (7486) needed some of another retina "grafted" on, this only contaminated -100 to -80  microns of the flattened image, so if there's a sufficiently small area of fovea that you'd like to analyze (e.g., -50 to +50 microns from the fovea center) it would be OK to retain this image in your analysis]
+
+dim light experiment:
+ DARK-no exclusions
+ LIGHT-no exclusions
