@@ -1,33 +1,41 @@
+from __future__ import annotations
+
+from typing import Dict, List, Tuple
+import numpy as np
 import torch
-from collections import defaultdict
-from utils.aggregation import aggregate_patient_predictions
-from utils.metrics import compute_metrics
+from torch.utils.data import DataLoader
+from tqdm import tqdm
 
-def evaluate(model, loader, device):
-    device = torch.device(device)
+from utils.metrics import compute_binary_metrics
+
+@torch.no_grad()
+def evaluate(model, loader: DataLoader, device: torch.device) -> Dict:
     model.eval()
-    model.to(device)
+    y_true: List[int] = []
+    y_prob: List[float] = []
+    patient_ids: List[str] = []
+    attn: List[np.ndarray] = []
 
-    patient_logits = defaultdict(list)
-    patient_labels = {}
+    for batch in tqdm(loader, desc="eval", leave=False):
+        batch = {k: (v.to(device) if torch.is_tensor(v) else v) for k, v in batch.items()}
+        out = model(batch)
+        prob = out.prob_ad.detach().cpu().numpy()
+        lab = batch["label"].detach().cpu().numpy()
+        y_true.extend(lab.tolist())
+        y_prob.extend(prob.tolist())
+        patient_ids.extend(list(batch["patient_id"]))
+        attn.extend(out.attention_weights.detach().cpu().numpy())
 
-    with torch.no_grad():
-        for x, y, patients in loader:
-            x = x.to(device)
-            y = y.float()
-
-            logits = model(x).view(-1).cpu()
-
-            for logit, label, patient_id in zip(logits, y, patients):
-                patient_logits[patient_id].append(logit.item())
-                patient_labels[patient_id] = label.item()
-
-    preds, labels = [], []
-    for patient_id in patient_logits:
-        preds.append(
-            aggregate_patient_predictions(patient_logits[patient_id])
-        )
-        labels.append(patient_labels[patient_id])
-
-    metrics = compute_metrics(preds, labels)
-    return metrics
+    metrics = compute_binary_metrics(np.array(y_true), np.array(y_prob))
+    return {
+        "metrics": metrics,
+        "patients": [
+            {
+                "patient_id": pid,
+                "prediction": float(p),
+                "label": int(y),
+                "attention_weights": a.tolist(),
+            }
+            for pid, p, y, a in zip(patient_ids, y_prob, y_true, attn)
+        ],
+    }

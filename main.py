@@ -1,39 +1,39 @@
-import yaml
-import torch
-from torch.utils.data import DataLoader
+from __future__ import annotations
 
-from dataocteye.oct_dataset import RetinalOCTDataset
-from models.oct_classifier import OCTClassifier
-from train.train import train
-from train.eval import evaluate   
+import argparse
+import os
+import yaml
+import json
+
+from train.train import train_one_fold
+
+def load_cfg(path: str):
+    with open(path, "r", encoding="utf-8") as f:
+        return yaml.safe_load(f)
 
 def main():
-    with open("/content/AIForAlzheimers_EyeEyeCaptain/configs/config.yaml") as f:
-        cfg = yaml.safe_load(f)
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--config", type=str, required=True)
+    args = ap.parse_args()
 
-    dataset = RetinalOCTDataset(cfg["data_root"])
-    loader = DataLoader(
-        dataset,
-        batch_size=cfg["batch_size"],   
-    )
+    cfg = load_cfg(args.config)
 
-    model = OCTClassifier()
+    fold_index = int(cfg["split"].get("fold_index", 0))
+    num_folds = int(cfg["split"]["num_folds"])
+    out_dir = cfg["logging"]["out_dir"]
+    os.makedirs(out_dir, exist_ok=True)
 
-    train(
-        model=model,
-        loader=loader,
-        device=cfg["device"],
-        epochs=cfg["epochs"],
-        lr=cfg["learning_rate"]
-    )
+    results = []
+    if fold_index == -1:
+        for k in range(num_folds):
+            results.append(train_one_fold(cfg, k))
+    else:
+        results.append(train_one_fold(cfg, fold_index))
 
-    metrics = evaluate(
-        model=model,
-        loader=loader,
-        device=cfg["device"]
-    )
+    with open(os.path.join(out_dir, "summary.json"), "w", encoding="utf-8") as f:
+        json.dump(results, f, indent=2)
 
-    print("Evaluation results:", metrics)
+    print("Done. Summary written to", os.path.join(out_dir, "summary.json"))
 
 if __name__ == "__main__":
     main()

@@ -1,7 +1,0 @@
-# batch size, epoch등을 조절하는 파일
-
-data_root: data
-batch_size: 8
-epochs: 20
-learning_rate: 0.0001
-device: cuda

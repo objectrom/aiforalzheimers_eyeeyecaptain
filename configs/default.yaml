@@ -1,0 +1,40 @@
+seed: 42
+
+data:
+  root: data
+  labels_csv: null        # e.g., data/labels.csv ; if null, infer from patient_id prefix
+  prefer_flat_normed: true
+  image_size: 224
+  num_pairs: 1            # 마음대로 변경해주세요! (현재는 light/dark 1쌍만 있어요)
+  channels: 3             # model input channels (we repeat grayscale -> 3)
+  force_hw: [2048, 3208]
+  patient_prefix_map:     # used if labels_csv is null
+    CO: 0 # 1 : Positive 0 : Negative
+    AD: 1
+    AQ: 1
+    YA: 0
+
+split:
+  num_folds: 5
+  fold_index: 0           # set to -1 to run all folds !!
+  stratified: true
+
+train:
+  epochs: 30
+  batch_size_patients: 4  # batch = N patients (NOT slices)
+  lr: 3.0e-4
+  weight_decay: 0.05
+  num_workers: 0 # works only on GPU environment !!
+  amp: true
+  grad_clip_norm: 1.0
+
+model:
+  backbone: swin_tiny_patch4_window7_224   # timm model name
+  pretrained: true
+  dropout: 0.2
+  pair_mlp_hidden: 512
+  attention_hidden: 256
+
+logging:
+  out_dir: runs
+  save_best: true

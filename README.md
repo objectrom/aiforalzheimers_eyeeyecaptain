@@ -15,4 +15,5 @@ Alzheimer's disease vs healthy controls using retinal OCT / fOCT data.
 
 ## Run
 ```bash
-python main.py
+pip install -r requirements.txt
+python main.py --config configs/default.yaml
