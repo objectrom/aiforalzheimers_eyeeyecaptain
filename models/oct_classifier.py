@@ -40,7 +40,7 @@ class FunctionalOCTClassifier(nn.Module):
         pair_mlp_hidden: int = 512,
         attention_hidden: int = 256,
         num_pairs: int = 5,
-        num_classes: int = 1,
+        num_classes: int = 2,
     ):
         super().__init__()
         self.num_pairs = num_pairs
@@ -70,7 +70,7 @@ class FunctionalOCTClassifier(nn.Module):
             nn.Linear(feat_dim, feat_dim // 2),
             nn.GELU(),
             nn.Dropout(dropout),
-            nn.Linear(feat_dim // 2, 1),
+            nn.Linear(feat_dim // 2, 2),
         )
 
     def encode(self, x: torch.Tensor) -> torch.Tensor:
@@ -100,7 +100,7 @@ class FunctionalOCTClassifier(nn.Module):
         g = g.reshape(B, K, -1)    # [B, K, D]
 
         patient_emb, alpha = self.mil(g)          # [B,D], [B,K]
-        logits = self.classifier(patient_emb).squeeze(-1)  # [B]
-        prob_ad = torch.sigmoid(logits)   # [B]
+        logits = self.classifier(patient_emb)  # [B, 2]
+        prob_ad = F.softmax(logits, dim=-1)[:, 1]  # [B]
 
         return ModelOutput(logits=logits, prob_ad=prob_ad, attention_weights=alpha)
