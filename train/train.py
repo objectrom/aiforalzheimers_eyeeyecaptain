@@ -103,8 +103,8 @@ def train_one_fold(cfg: Dict, fold_index: int) -> Dict:
     train_labels = [ds.samples[i].label for i in tr_idx]
     class_counts = np.bincount(train_labels, minlength=2)
     total = len(train_labels)
-    class_weights = torch.FloatTensor([total / (2.0 * max(c, 1)) for c in class_counts]).to(device)
-
+    class_weights = torch.FloatTensor([1.0, 3.0]).to(device)
+    
     print(f"Fold {fold_index} - Class distribution: CO={class_counts[0]}, AD={class_counts[1]}")
     print(f"Class weights: {class_weights.cpu().numpy()}")
 
