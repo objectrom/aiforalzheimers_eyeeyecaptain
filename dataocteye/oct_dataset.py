@@ -4,7 +4,7 @@ import os
 import re
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
-
+import random
 import numpy as np
 import pandas as pd
 import torch
@@ -181,6 +181,7 @@ class OCTPatientDataset(Dataset):
         channels: int = 3,
         patient_prefix_map: Optional[Dict[str, int]] = None,
         patient_ids: Optional[List[str]] = None,
+        augment: bool = False,
     ):
         super().__init__()
         self.root = root
@@ -189,6 +190,7 @@ class OCTPatientDataset(Dataset):
         self.num_pairs = int(num_pairs)
         self.channels = int(channels)
         self.patient_prefix_map = patient_prefix_map or {"CO": 0, "AD": 1}
+        self.augment = augment
 
         # labels
         self.labels = None
@@ -201,6 +203,24 @@ class OCTPatientDataset(Dataset):
         # transforms (keep simple + stable)
         self.to_tensor = T.ToTensor()  # HWC or HW -> CHW in [0,1] if uint8; for float keep scale
         self.resize = T.Resize((self.image_size, self.image_size), antialias=True)
+        
+        if self.augment:
+            self.aug_transform = T.Compose([
+            T.RandomHorizontalFlip(p=0.5),
+            T.RandomVerticalFlip(p=0.3),
+            T.RandomRotation(degrees=15),
+            T.RandomAffine(
+                degrees=0,
+                translate=(0.1, 0.1),
+                scale=(0.9, 1.1),
+            ),
+            T.ColorJitter(
+                brightness=0.3,
+                contrast=0.3,
+            ),
+        ])
+        else:
+            self.aug_transform = None
 
         # index patients
         all_patients = sorted([d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d))])
@@ -273,6 +293,13 @@ class OCTPatientDataset(Dataset):
         # ToTensor expects HxW or HxWxC
         t = torch.from_numpy(a).unsqueeze(0)  # [1,H,W]
         t = self.resize(t)
+        # ก็ Augmentation
+        if self.augment and self.aug_transform is not None:
+            t = self.aug_transform(t)
+    
+        # Random erasing (augmentation)
+        if self.augment and random.random() < 0.3:
+            t = T.RandomErasing(p=1.0, scale=(0.02, 0.15))(t)
         if self.channels == 3:
             t = t.repeat(3, 1, 1)
         return t

@@ -49,13 +49,38 @@ def train_one_fold(cfg: Dict, fold_index: int) -> Dict:
         num_pairs=int(cfg["data"]["num_pairs"]),
         channels=int(cfg["data"]["channels"]),
         patient_prefix_map=cfg["data"].get("patient_prefix_map", {"CO": 0, "AD": 1}),
+        augment=False,
+    )
+    
+    # Train dataset
+    train_ds = OCTPatientDataset(
+        root=cfg["data"]["root"],
+        labels_csv=cfg["data"]["labels_csv"],
+        prefer_flat_normed=bool(cfg["data"]["prefer_flat_normed"]),
+        image_size=int(cfg["data"]["image_size"]),
+        num_pairs=int(cfg["data"]["num_pairs"]),
+        channels=int(cfg["data"]["channels"]),
+        patient_prefix_map=cfg["data"].get("patient_prefix_map", {"CO": 0, "AD": 1}),
+        augment=True,  # °Á Training¿∫ augmentation ON
+    )
+    
+    # validation dataset
+    val_ds = OCTPatientDataset(
+        root=cfg["data"]["root"],
+        labels_csv=cfg["data"]["labels_csv"],
+        prefer_flat_normed=bool(cfg["data"]["prefer_flat_normed"]),
+        image_size=int(cfg["data"]["image_size"]),
+        num_pairs=int(cfg["data"]["num_pairs"]),
+        channels=int(cfg["data"]["channels"]),
+        patient_prefix_map=cfg["data"].get("patient_prefix_map", {"CO": 0, "AD": 1}),
+        augment=False,  # °Á Validation¿∫ augmentation OFF
     )
 
     folds = make_splits(ds, int(cfg["split"]["num_folds"]), bool(cfg["split"]["stratified"]), int(cfg["seed"]))
     tr_idx, va_idx = folds[fold_index]
 
-    train_set = Subset(ds, tr_idx.tolist())
-    val_set = Subset(ds, va_idx.tolist())
+    train_set = Subset(train_ds, tr_idx.tolist())
+    val_set = Subset(val_ds, va_idx.tolist())
 
     def collate(batch):
         # Keep patient_id as list of strings
