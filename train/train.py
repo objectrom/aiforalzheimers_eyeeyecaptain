@@ -108,7 +108,7 @@ def train_one_fold(cfg: Dict, fold_index: int) -> Dict:
     print(f"Fold {fold_index} - Class distribution: CO={class_counts[0]}, AD={class_counts[1]}")
     print(f"Class weights: {class_weights.cpu().numpy()}")
 
-    pos_weight = torch.tensor([5.0]).to(device)
+    pos_weight = torch.tensor([3.0]).to(device)
     criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
     optimizer = torch.optim.AdamW(
         model.parameters(),
