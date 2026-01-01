@@ -26,6 +26,13 @@ def evaluate(model, loader: DataLoader, device: torch.device) -> Dict:
         patient_ids.extend(list(batch["patient_id"]))
         attn.extend(out.attention_weights.detach().cpu().numpy())
 
+    print(f"Probability stats:")
+    print(f"  Min: {np.min(y_prob):.4f}")
+    print(f"  Max: {np.max(y_prob):.4f}")
+    print(f"  Mean: {np.mean(y_prob):.4f}")
+    print(f"  AD cases mean: {np.mean([p for p, y in zip(y_prob, y_true) if y == 1]):.4f}")
+    print(f"  Normal cases mean: {np.mean([p for p, y in zip(y_prob, y_true) if y == 0]):.4f}")
+
     metrics = compute_binary_metrics(np.array(y_true), np.array(y_prob))
     return {
         "metrics": metrics,
