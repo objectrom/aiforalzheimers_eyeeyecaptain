@@ -103,13 +103,13 @@ def train_one_fold(cfg: Dict, fold_index: int) -> Dict:
     train_labels = [ds.samples[i].label for i in tr_idx]
     class_counts = np.bincount(train_labels, minlength=2)
     total = len(train_labels)
-    class_weights = torch.FloatTensor([1.0, 3.0]).to(device)
+    class_weights = torch.FloatTensor([1.0, 2.5]).to(device)
     
     print(f"Fold {fold_index} - Class distribution: CO={class_counts[0]}, AD={class_counts[1]}")
     print(f"Class weights: {class_weights.cpu().numpy()}")
 
     pos_weight = torch.tensor([3.0]).to(device)
-    criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+    criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = torch.optim.AdamW(
         model.parameters(),
         lr=float(cfg["train"]["lr"]),
@@ -138,7 +138,7 @@ def train_one_fold(cfg: Dict, fold_index: int) -> Dict:
             optimizer.zero_grad(set_to_none=True)
             with torch.cuda.amp.autocast(enabled=bool(cfg["train"]["amp"])):
                 out = model(batch)
-                loss = criterion(out.logits, batch["label"].float())
+                loss = criterion(out.logits, batch["label"])
 
             scaler.scale(loss).backward()
             if grad_clip and grad_clip > 0:
